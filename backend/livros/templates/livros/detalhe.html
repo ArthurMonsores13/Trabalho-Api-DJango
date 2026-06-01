@@ -1,0 +1,100 @@
+{% extends "livros/base.html" %}
+{% load livros_tags %}
+
+{% block title %}{{ livro.titulo }} — Minha Biblioteca{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/livros/" class="text-decoration-none">Acervo</a></li>
+        <li class="breadcrumb-item active">{{ livro.titulo }}</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="livro-detalhe-card d-flex flex-row">
+            <!-- Lombada decorativa -->
+            <div class="livro-detalhe-spine"></div>
+
+            <div class="p-4 p-md-5 flex-grow-1">
+
+                <!-- Cabeçalho -->
+                <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+                    <div>
+                        <span class="badge badge-genero mb-2 px-3 py-2 fs-6">
+                            <i class="bi bi-tag me-1"></i>{{ livro.genero }}
+                        </span>
+                        <h2 class="fw-bold mb-1">{{ livro.titulo }}</h2>
+                        <p class="text-muted fs-5 mb-0">
+                            <i class="bi bi-person-fill me-1"></i>{{ livro.autor }}
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <div class="estrelas fs-4 mb-1">
+                            {% for i in livro.nota|estrelas_cheias %}
+                                <i class="bi bi-star-fill"></i>
+                            {% endfor %}
+                            {% for i in livro.nota|estrelas_vazias %}
+                                <i class="bi bi-star"></i>
+                            {% endfor %}
+                        </div>
+                        <small class="text-muted">Nota: <strong>{{ livro.nota }}/5</strong></small>
+                    </div>
+                </div>
+
+                <hr class="my-3" style="border-color: var(--creme-escuro);">
+
+                <!-- Informações -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-4">
+                        <p class="info-label mb-1"><i class="bi bi-calendar3 me-1"></i>Ano</p>
+                        <p class="info-valor mb-0">{{ livro.ano }}</p>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <p class="info-label mb-1"><i class="bi bi-bookmark me-1"></i>Gênero</p>
+                        <p class="info-valor mb-0">{{ livro.genero }}</p>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <p class="info-label mb-1"><i class="bi bi-hash me-1"></i>ID</p>
+                        <p class="info-valor mb-0">#{{ livro.pk }}</p>
+                    </div>
+                </div>
+
+                <!-- Comentário -->
+                {% if livro.comentario %}
+                <div class="mb-4">
+                    <p class="info-label mb-2"><i class="bi bi-chat-quote me-1"></i>Meu Comentário</p>
+                    <div class="comentario-box">
+                        {{ livro.comentario }}
+                    </div>
+                </div>
+                {% else %}
+                <div class="mb-4">
+                    <p class="text-muted fst-italic">
+                        <i class="bi bi-chat-dots me-1"></i>Nenhum comentário adicionado.
+                    </p>
+                </div>
+                {% endif %}
+
+                <!-- Ações -->
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="/livros/{{ livro.pk }}/editar/" class="btn btn-biblioteca">
+                        <i class="bi bi-pencil-square me-2"></i>Editar
+                    </a>
+                    <a href="/livros/{{ livro.pk }}/deletar/" class="btn btn-outline-danger">
+                        <i class="bi bi-trash me-2"></i>Excluir
+                    </a>
+                    <a href="/livros/" class="btn btn-outline-secondary ms-auto">
+                        <i class="bi bi-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

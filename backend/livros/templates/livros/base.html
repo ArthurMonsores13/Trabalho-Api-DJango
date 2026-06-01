@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Minha Biblioteca{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --verde-escuro: #1a472a;
+            --verde-medio: #2d6a4f;
+            --dourado: #c9a84c;
+            --creme: #fdf6e3;
+            --creme-escuro: #f0e6cc;
+            --texto-escuro: #2c2c2c;
+        }
+
+        body {
+            background-color: var(--creme);
+            font-family: 'Georgia', 'Times New Roman', serif;
+            color: var(--texto-escuro);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+            box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+            padding: 0.75rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--dourado) !important;
+            letter-spacing: 0.5px;
+        }
+
+        .navbar-brand i { font-size: 1.4rem; }
+
+        .nav-link {
+            color: rgba(255,255,255,0.88) !important;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--dourado) !important;
+        }
+
+        /* ── Botões ── */
+        .btn-biblioteca {
+            background-color: var(--verde-escuro);
+            border-color: var(--verde-escuro);
+            color: #fff;
+            font-family: inherit;
+        }
+
+        .btn-biblioteca:hover {
+            background-color: var(--verde-medio);
+            border-color: var(--verde-medio);
+            color: #fff;
+        }
+
+        .btn-dourado {
+            background-color: var(--dourado);
+            border-color: var(--dourado);
+            color: #fff;
+            font-family: inherit;
+        }
+
+        .btn-dourado:hover {
+            background-color: #b8963f;
+            border-color: #b8963f;
+            color: #fff;
+        }
+
+        /* ── Cards de Livros ── */
+        .card-livro {
+            border: none;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .card-livro:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.14);
+        }
+
+        .card-livro .spine {
+            width: 8px;
+            min-height: 100%;
+            background: var(--verde-escuro);
+            flex-shrink: 0;
+        }
+
+        .card-livro .spine.dourado { background: var(--dourado); }
+        .card-livro .spine.azul    { background: #3a6ea5; }
+        .card-livro .spine.roxo   { background: #6a3a9e; }
+        .card-livro .spine.vermelho { background: #9e3a3a; }
+
+        .badge-genero {
+            background-color: var(--creme-escuro);
+            color: var(--verde-escuro);
+            border: 1px solid var(--dourado);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* ── Estrelas ── */
+        .estrelas .bi-star-fill { color: var(--dourado); }
+        .estrelas .bi-star       { color: #ccc; }
+
+        /* ── Hero ── */
+        .hero {
+            background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-medio) 100%);
+            color: #fff;
+            padding: 3rem 0 2.5rem;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 { color: var(--dourado); font-weight: 700; }
+
+        /* ── Formulário ── */
+        .form-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+            padding: 2rem 2.5rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--verde-medio);
+            box-shadow: 0 0 0 0.2rem rgba(45,106,79,0.2);
+        }
+
+        label { font-weight: 600; font-size: 0.92rem; }
+
+        /* ── Filtros de gênero ── */
+        .filtro-genero {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filtro-genero a {
+            text-decoration: none;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            background: #fff;
+            border: 1.5px solid var(--verde-medio);
+            color: var(--verde-escuro);
+            transition: all 0.2s;
+        }
+
+        .filtro-genero a:hover,
+        .filtro-genero a.ativo {
+            background: var(--verde-escuro);
+            color: #fff;
+            border-color: var(--verde-escuro);
+        }
+
+        /* ── Detalhe do livro ── */
+        .livro-detalhe-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .livro-detalhe-spine {
+            width: 14px;
+            background: var(--verde-escuro);
+            flex-shrink: 0;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #888;
+            font-family: Arial, sans-serif;
+        }
+
+        .info-valor {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--texto-escuro);
+        }
+
+        .comentario-box {
+            background: var(--creme);
+            border-left: 4px solid var(--dourado);
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #555;
+        }
+
+        /* ── Página de confirmação de exclusão ── */
+        .danger-card {
+            border-top: 5px solid #dc3545;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+        }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--verde-escuro);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.88rem;
+            margin-top: auto;
+            padding: 1.25rem 0;
+        }
+
+        footer a { color: var(--dourado); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* ── Empty state ── */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: #888;
+        }
+
+        .empty-state i { font-size: 4rem; color: var(--creme-escuro); }
+
+        /* ── Search bar ── */
+        .search-input {
+            border-radius: 25px 0 0 25px !important;
+            border: 2px solid var(--verde-medio);
+            padding-left: 1.2rem;
+        }
+
+        .search-input:focus {
+            border-color: var(--verde-escuro);
+            box-shadow: none;
+        }
+
+        .search-btn {
+            border-radius: 0 25px 25px 0 !important;
+            background: var(--verde-escuro);
+            border-color: var(--verde-escuro);
+            color: #fff;
+        }
+
+        .search-btn:hover {
+            background: var(--verde-medio);
+            border-color: var(--verde-medio);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="bi bi-book-half me-2"></i>Minha Biblioteca
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                <li class="nav-item">
+                    <a class="nav-link" href="/livros/">
+                        <i class="bi bi-grid-3x3-gap me-1"></i>Acervo
+                    </a>
+                </li>
+                <li class="nav-item ms-lg-2">
+                    <a class="btn btn-dourado btn-sm px-3" href="/livros/adicionar/">
+                        <i class="bi bi-plus-lg me-1"></i>Adicionar Livro
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="flex-grow-1">
+    <div class="container my-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="bi bi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+</main>
+
+<footer>
+    <div class="container text-center">
+        <i class="bi bi-book me-1"></i>
+        Minha Biblioteca &copy; 2025 &nbsp;&mdash;&nbsp;
+        <a href="/api/livros/">API JSON</a>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
